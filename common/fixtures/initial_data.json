@@ -1,0 +1,301 @@
+[
+  {
+    "model": "common.category",
+    "pk": 1,
+    "fields": {
+      "name": "starters",
+      "description": "Appetizers and starter dishes",
+      "is_available": true,
+      "type": "food"
+    }
+  },
+  {
+    "model": "common.category",
+    "pk": 2,
+    "fields": {
+      "name": "main-course",
+      "description": "Main course dishes",
+      "is_available": true,
+      "type": "food"
+    }
+  },
+  {
+    "model": "common.category",
+    "pk": 3,
+    "fields": {
+      "name": "bread",
+      "description": "Bread and roti items",
+      "is_available": true,
+      "type": "food"
+    }
+  },
+  {
+    "model": "common.category",
+    "pk": 4,
+    "fields": {
+      "name": "beverages",
+      "description": "Drinks and beverages",
+      "is_available": true,
+      "type": "drink"
+    }
+  },
+  {
+    "model": "common.tag",
+    "pk": 1,
+    "fields": {
+      "name": "paneer",
+      "description": "Paneer based dishes",
+      "is_available": true,
+      "type": ["vegetarian"]
+    }
+  },
+  {
+    "model": "common.tag",
+    "pk": 2,
+    "fields": {
+      "name": "lentils",
+      "description": "Lentil based dishes",
+      "is_available": true,
+      "type": ["vegetarian"]
+    }
+  },
+  {
+    "model": "common.tag",
+    "pk": 3,
+    "fields": {
+      "name": "roti",
+      "description": "Roti and bread items",
+      "is_available": true,
+      "type": ["bread"]
+    }
+  },
+  {
+    "model": "common.tag",
+    "pk": 4,
+    "fields": {
+      "name": "beverages",
+      "description": "Drink items",
+      "is_available": true,
+      "type": ["drink"]
+    }
+  },
+  {
+    "model": "common.product",
+    "pk": 1,
+    "fields": {
+      "name": "Paneer Tikka",
+      "description": "A popular North Indian dish made with marinated paneer cubes grilled to perfection.",
+      "image_urls": ["/api/common/images/products/paneer_tikka_1/main.jpg", "/api/common/images/products/paneer_tikka_1/side.jpg"],
+      "discount": "10.00",
+      "is_available": true,
+      "category": 1,
+      "sub_category": ["paneer"]
+    }
+  },
+  {
+    "model": "common.product",
+    "pk": 2,
+    "fields": {
+      "name": "Dal Fry",
+      "description": "A comforting dish made with lentils simmered in a flavorful tomato-based gravy.",
+      "image_urls": ["/api/common/images/products/dal_fry_2/main.jpg"],
+      "discount": "15.00",
+      "is_available": true,
+      "category": 2,
+      "sub_category": ["lentils"]
+    }
+  },
+  {
+    "model": "common.product",
+    "pk": 3,
+    "fields": {
+      "name": "Dahi Bhalla",
+      "description": "Soft lentil dumplings served in creamy yogurt with tangy chutneys.",
+      "image_urls": ["/api/common/images/products/dahi_bhalla_3/main.jpg"],
+      "discount": "0.00",
+      "is_available": true,
+      "category": 1,
+      "sub_category": ["paneer"]
+    }
+  },
+  {
+    "model": "common.product",
+    "pk": 4,
+    "fields": {
+      "name": "Roti",
+      "description": "Fresh handmade Indian flatbread, perfect with curries.",
+      "image_urls": ["/api/common/images/products/roti_4/main.jpg"],
+      "discount": "0.00",
+      "is_available": true,
+      "category": 3,
+      "sub_category": ["roti"]
+    }
+  },
+  {
+    "model": "common.product",
+    "pk": 5,
+    "fields": {
+      "name": "Chhachh",
+      "description": "Traditional spiced buttermilk drink, refreshing and cooling.",
+      "image_urls": ["/api/common/images/products/chhachh_5/main.jpg"],
+      "discount": "0.00",
+      "is_available": true,
+      "category": 4,
+      "sub_category": ["beverages"]
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "size": "small",
+      "price": "149.00",
+      "description": "3-4 pieces",
+      "is_available": true,
+      "type": "portion"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 2,
+    "fields": {
+      "product": 1,
+      "size": "regular",
+      "price": "199.00",
+      "description": "4-5 pieces",
+      "is_available": true,
+      "type": "portion"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 3,
+    "fields": {
+      "product": 1,
+      "size": "large",
+      "price": "249.00",
+      "description": "5-6 pieces",
+      "is_available": true,
+      "type": "portion"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 4,
+    "fields": {
+      "product": 2,
+      "size": "small",
+      "price": "129.00",
+      "description": "approx 200ml",
+      "is_available": true,
+      "type": "volume"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 5,
+    "fields": {
+      "product": 2,
+      "size": "regular",
+      "price": "179.00",
+      "description": "approx 300ml",
+      "is_available": true,
+      "type": "volume"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 6,
+    "fields": {
+      "product": 2,
+      "size": "large",
+      "price": "229.00",
+      "description": "approx 400ml",
+      "is_available": true,
+      "type": "volume"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 7,
+    "fields": {
+      "product": 3,
+      "size": "small",
+      "price": "149.00",
+      "description": "approx 200ml",
+      "is_available": true,
+      "type": "volume"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 8,
+    "fields": {
+      "product": 3,
+      "size": "regular",
+      "price": "199.00",
+      "description": "approx 300ml",
+      "is_available": true,
+      "type": "volume"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 9,
+    "fields": {
+      "product": 4,
+      "size": "with butter",
+      "price": "19.00",
+      "description": "butter applied on roti",
+      "is_available": true,
+      "type": "preparation"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 10,
+    "fields": {
+      "product": 4,
+      "size": "without butter",
+      "price": "15.00",
+      "description": "no butter applied on roti",
+      "is_available": true,
+      "type": "preparation"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 11,
+    "fields": {
+      "product": 5,
+      "size": "regular",
+      "price": "19.00",
+      "description": "approx 200ml",
+      "is_available": true,
+      "type": "volume"
+    }
+  },
+  {
+    "model": "common.variant",
+    "pk": 12,
+    "fields": {
+      "product": 5,
+      "size": "large",
+      "price": "29.00",
+      "description": "approx 400ml",
+      "is_available": true,
+      "type": "volume"
+    }
+  },
+  {
+    "model": "common.restaurententity",
+    "pk": 1,
+    "fields": {
+      "name": "Sample Restaurant",
+      "description": "A sample restaurant for testing",
+      "address": "123 Main Street, City",
+      "is_available": true
+    }
+  }
+]

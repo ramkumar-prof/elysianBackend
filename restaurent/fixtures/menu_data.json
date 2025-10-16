@@ -1,0 +1,57 @@
+[
+  {
+    "model": "restaurent.restaurentmenu",
+    "pk": 1,
+    "fields": {
+      "restaurent": 1,
+      "product": 1,
+      "is_available": true,
+      "is_veg": true,
+      "default_variant": 2
+    }
+  },
+  {
+    "model": "restaurent.restaurentmenu",
+    "pk": 2,
+    "fields": {
+      "restaurent": 1,
+      "product": 2,
+      "is_available": true,
+      "is_veg": true,
+      "default_variant": 5
+    }
+  },
+  {
+    "model": "restaurent.restaurentmenu",
+    "pk": 3,
+    "fields": {
+      "restaurent": 1,
+      "product": 3,
+      "is_available": true,
+      "is_veg": true,
+      "default_variant": 8
+    }
+  },
+  {
+    "model": "restaurent.restaurentmenu",
+    "pk": 4,
+    "fields": {
+      "restaurent": 1,
+      "product": 4,
+      "is_available": true,
+      "is_veg": true,
+      "default_variant": 9
+    }
+  },
+  {
+    "model": "restaurent.restaurentmenu",
+    "pk": 5,
+    "fields": {
+      "restaurent": 1,
+      "product": 5,
+      "is_available": true,
+      "is_veg": true,
+      "default_variant": 11
+    }
+  }
+]
