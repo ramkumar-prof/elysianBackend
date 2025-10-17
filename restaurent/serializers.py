@@ -10,24 +10,26 @@ class RestaurentMenuSerializer(serializers.ModelSerializer):
     veg = serializers.BooleanField(source='is_veg')
     category = serializers.CharField(source='product.category.name')
     sub_categories = serializers.JSONField(source='product.sub_category')
+    product_id = serializers.IntegerField(source='product.id')
 
     class Meta:
         model = RestaurentMenu
         fields = ['id', 'name', 'description', 'variants', 'images_url', 
-                 'discount_percentage', 'is_available', 'veg', 'category', 'sub_categories']
+                 'discount_percentage', 'is_available', 'veg', 'category', 'sub_categories', 'product_id']
 
     def get_variants(self, obj):
         # Get variants using the foreign key relationship
         variants = obj.product.variants.all()
         result = []
-        
+
         for variant in variants:
             is_default = obj.default_variant and obj.default_variant.id == variant.id
             result.append({
+                'variant_id': variant.id,
                 'size': variant.size,
                 'price': float(variant.price),
                 'size_description': variant.description,
                 'default': is_default
             })
-        
+
         return result
