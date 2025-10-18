@@ -37,7 +37,7 @@ else:
 # Cookie security settings
 if IS_PRODUCTION:
     # Production: Read from environment variables
-    COOKIE_SECURE = os.getenv('COOKIE_SECURE', 'True').lower() == 'true'
+    COOKIE_SECURE = os.getenv('COOKIE_SECURE', 'False').lower() == 'true'
     COOKIE_SAMESITE = os.getenv('COOKIE_SAMESITE', 'Lax')
     COOKIE_HTTPONLY = os.getenv('COOKIE_HTTPONLY', 'True').lower() == 'true'
     COOKIE_PATH = os.getenv('COOKIE_PATH', '/')
