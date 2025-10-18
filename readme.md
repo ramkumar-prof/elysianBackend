@@ -11,3 +11,4 @@ docker-compose logs -f backend
 docker-compose down
 docker-compose up --build -d
 docker-compose logs -f backend
+sudo docker ps

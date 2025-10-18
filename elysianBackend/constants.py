@@ -75,11 +75,11 @@ else:
 
 # Database settings
 if IS_PRODUCTION:
-    DATABASE_NAME = os.getenv('DATABASE_NAME')
-    DATABASE_USER = os.getenv('DATABASE_USER')
-    DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
-    DATABASE_HOST = os.getenv('DATABASE_HOST', 'localhost')
-    DATABASE_PORT = os.getenv('DATABASE_PORT', '5432')
+    DATABASE_NAME = os.getenv('DATABASE_NAME', 'elysian')
+    DATABASE_USER = os.getenv('DATABASE_USER', 'elysian')
+    DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD', 'elysian#12345678')
+    DATABASE_HOST = os.getenv('DATABASE_HOST', 'db')
+    DATABASE_PORT = os.getenv('DATABASE_PORT', '3306')
 else:
     # Development/QA: Use SQLite
     DATABASE_NAME = 'elysian'
