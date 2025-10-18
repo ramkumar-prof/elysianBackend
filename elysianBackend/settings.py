@@ -124,11 +124,11 @@ WSGI_APPLICATION = 'elysianBackend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': DATABASE_NAME,
-        'USER': DATABASE_USER,
-        'PASSWORD': DATABASE_PASSWORD,
-        'HOST': DATABASE_HOST,
-        'PORT': DATABASE_PORT,
+        'NAME': os.getenv('DATABASE_NAME', DATABASE_NAME),
+        'USER': os.getenv('DATABASE_USER', DATABASE_USER),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', DATABASE_PASSWORD),
+        'HOST': os.getenv('DATABASE_HOST', DATABASE_HOST),
+        'PORT': os.getenv('DATABASE_PORT', DATABASE_PORT),
     }
 }
 
