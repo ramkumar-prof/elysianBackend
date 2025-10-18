@@ -189,7 +189,7 @@ def serve_image(request, image_path):
 def get_or_create_session(request):
     """
     Get or create session ID for anonymous users
-    If valid refresh token exists, create access token
+    If valid refresh token and user both available, refresh access token
     Otherwise, clear existing tokens and create new session
     """
     # Check if there's a valid refresh token
@@ -197,48 +197,68 @@ def get_or_create_session(request):
 
     if refresh_token_value:
         try:
-            # Try to use refresh token to create access token
+            # Try to validate refresh token and get user
             refresh_token = RefreshToken(refresh_token_value)
-            access_token = refresh_token.access_token
+            user_id = refresh_token.payload.get('user_id')
 
-            response = Response({
-                'message': 'Access token refreshed',
-                'access_token': str(access_token)
-            }, status=status.HTTP_200_OK)
+            if user_id:
+                # Verify user exists in database
+                User = get_user_model()
+                try:
+                    user_obj = User.objects.get(id=user_id)
 
-            # Clear existing tokens first
-            response.delete_cookie(ACCESS_TOKEN_COOKIE_NAME, path=COOKIE_PATH)
-            response.delete_cookie(REFRESH_TOKEN_COOKIE_NAME, path=COOKIE_PATH)
+                    # Both refresh token and user are valid - refresh access token
+                    access_token = refresh_token.access_token
 
-            # Set new access token cookie
-            response.set_cookie(
-                ACCESS_TOKEN_COOKIE_NAME,
-                str(access_token),
-                httponly=COOKIE_HTTPONLY,
-                secure=COOKIE_SECURE,
-                samesite=COOKIE_SAMESITE,
-                max_age=ACCESS_TOKEN_EXPIRY,
-                path=COOKIE_PATH
-            )
+                    response = Response({
+                        'message': 'Access token refreshed',
+                        'access_token': str(access_token),
+                        'user': {
+                            'id': user_obj.id,
+                            'mobile_number': user_obj.mobile_number,
+                            'first_name': user_obj.first_name,
+                            'last_name': user_obj.last_name
+                        }
+                    }, status=status.HTTP_200_OK)
 
-            # Set refresh token cookie (rotation)
-            response.set_cookie(
-                REFRESH_TOKEN_COOKIE_NAME,
-                str(refresh_token),
-                httponly=COOKIE_HTTPONLY,
-                secure=COOKIE_SECURE,
-                samesite=COOKIE_SAMESITE,
-                max_age=REFRESH_TOKEN_EXPIRY,
-                path=COOKIE_PATH
-            )
+                    # Clear existing tokens first
+                    response.delete_cookie(ACCESS_TOKEN_COOKIE_NAME, path=COOKIE_PATH)
+                    response.delete_cookie(REFRESH_TOKEN_COOKIE_NAME, path=COOKIE_PATH)
+                    response.delete_cookie(SESSION_COOKIE_NAME, path=COOKIE_PATH)
 
-            return response
+                    # Set new access token cookie
+                    response.set_cookie(
+                        ACCESS_TOKEN_COOKIE_NAME,
+                        str(access_token),
+                        httponly=COOKIE_HTTPONLY,
+                        secure=COOKIE_SECURE,
+                        samesite=COOKIE_SAMESITE,
+                        max_age=ACCESS_TOKEN_EXPIRY,
+                        path=COOKIE_PATH
+                    )
+
+                    # Set refresh token cookie (rotation)
+                    response.set_cookie(
+                        REFRESH_TOKEN_COOKIE_NAME,
+                        str(refresh_token),
+                        httponly=COOKIE_HTTPONLY,
+                        secure=COOKIE_SECURE,
+                        samesite=COOKIE_SAMESITE,
+                        max_age=REFRESH_TOKEN_EXPIRY,
+                        path=COOKIE_PATH
+                    )
+
+                    return response
+
+                except User.DoesNotExist:
+                    # User doesn't exist, continue to create new session
+                    pass
 
         except (TokenError, InvalidToken):
             # Refresh token is invalid, continue to create new session
             pass
 
-    # No valid refresh token - clear existing tokens and create new session
+    # No valid refresh token or user - clear existing tokens and create new session
     if not request.session.session_key:
         request.session.create()
 

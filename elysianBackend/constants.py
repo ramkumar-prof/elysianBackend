@@ -68,7 +68,7 @@ else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:4200",
         "http://127.0.0.1:4200",
-        "http://localhost:3000",  # For other frontend frameworks
+        "http://frontend:4200",  # For other frontend frameworks
         "http://127.0.0.1:3000"
     ]
     CORS_ALLOW_CREDENTIALS = True
