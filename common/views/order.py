@@ -61,10 +61,9 @@ def checkout(request):
         order_items = []
         
         for cart_item in cart_items:
-            # Calculate item total (price * quantity - discount)
-            item_price = int(cart_item.variant.price * 100)  # Convert to paisa
-            item_discount = int(cart_item.product.discount * cart_item.quantity * 100)  # Convert to paisa
-            item_total = (item_price * cart_item.quantity) - item_discount
+            item_price = cart_item.variant.price * 100
+            per_item = item_price - item_price * cart_item.product.discount / 100
+            item_total = per_item * cart_item.quantity # conver to paisa
             
             total_amount += item_total
             
@@ -73,8 +72,8 @@ def checkout(request):
                 'product': cart_item.product.id,
                 'variant': cart_item.variant.id,
                 'quantity': cart_item.quantity,
-                'price': item_price,
-                'discount': item_discount,
+                'price': int(item_price),
+                'discount': int(cart_item.product.discount),
                 'product_name': cart_item.product.name,
                 'variant_size': cart_item.variant.size,
                 'variant_type': cart_item.variant.type
@@ -124,10 +123,10 @@ def checkout(request):
                 payment = Payment.objects.create(
                     order=order,
                     amount=total_amount,
-                    transaction_id=gateway_order_id,
-                    gateway_order_id=gateway_response_order_id,
+                    transaction_id='',
+                    gateway_order_id=gateway_order_id,
                     payment_status=payment_state,
-                    payment_method='UPI',  # Default, will be updated based on user selection
+                    payment_method='',  # Default, will be updated based on user selection
                     additional_info={
                         'redirect_url': redirect_url,
                         'expire_at': expire_at,
@@ -190,72 +189,44 @@ def get_order_details(request, order_id):
     Checks payment gateway for latest status if order is pending
     """
     order = get_object_or_404(Order, id=order_id, user=request.user)
+    # get payment status
+    payment = get_object_or_404(Payment, order=order)
 
     # Check if order payment status is pending and update from gateway
     if order.payment_status == 'PENDING':
         try:
             # Get latest payment status from gateway
-            gateway_response = get_payment_status(str(order.id))
+            gateway_response = get_payment_status(str(payment.gateway_order_id))
+            print("Payment status response: ", gateway_response)
 
-            if gateway_response and hasattr(gateway_response, 'data'):
-                gateway_data = gateway_response.data
-
-                # Update order payment status based on gateway response
-                if hasattr(gateway_data, 'state'):
-                    gateway_status = gateway_data.state
-
-                    # Map gateway status to our status
-                    status_mapping = {
-                        'COMPLETED': 'COMPLETED',
-                        'FAILED': 'FAILED',
-                        'PENDING': 'PENDING'
+            # Handle both dictionary responses (our error format) and PhonePe response objects
+            if gateway_response:
+                payment.payment_status = gateway_response.state
+                
+                if len(gateway_response.payment_details) > 0:
+                    payment_details = gateway_response.payment_details[0]
+                    payment.transaction_id = payment_details.transaction_id
+                    payment.payment_method = payment_details.payment_mode.value
+                    additional_info = {
+                        "timestamp": payment_details.timestamp,
+                        "error_code": payment_details.error_code,
+                        "error_detail": payment_details.detailed_error_code
                     }
-
-                    new_payment_status = status_mapping.get(gateway_status, 'PENDING')
-
-                    # Update order if status changed
-                    if order.payment_status != new_payment_status:
-                        order.payment_status = new_payment_status
-
-                        # Update order status based on payment status
-                        if new_payment_status == 'COMPLETED':
-                            order.order_status = 'CONFIRMED'
-                        elif new_payment_status == 'FAILED':
-                            order.order_status = 'CANCELLED'
-
-                        order.save()
-
-                        # Update associated payment record
-                        payment = Payment.objects.filter(order=order).first()
-                        if payment:
-                            payment.payment_status = new_payment_status
-
-                            # Update additional info with latest gateway data
-                            if hasattr(gateway_data, 'transaction_id'):
-                                payment.transaction_id = gateway_data.transaction_id
-
-                            # Update additional_info with gateway response
-                            additional_info = payment.additional_info or {}
-                            additional_info.update({
-                                'last_checked': timezone.now().isoformat(),
-                                'gateway_response': str(gateway_data)
-                            })
-                            payment.additional_info = additional_info
-                            payment.save()
-
+                    payment.additional_info = additional_info
+                payment.save()
+                order.payment_status = payment.payment_status
+                if order.payment_status == 'COMPLETED':
+                    order.order_status = 'CONFIRMED'
+                elif order.payment_status == 'FAILED':
+                    order.order_status = 'CANCELLED'
+                order.save()
         except Exception as e:
             # Log error but don't fail the request
             print(f"Error checking payment status: {str(e)}")
 
     # Serialize and return updated data
     serializer = OrderSerializer(order)
-
-    # Get associated payments
-    payments = Payment.objects.filter(order=order)
-    payment_serializer = PaymentSerializer(payments, many=True)
-
     return Response({
         'order': serializer.data,
-        'payments': payment_serializer.data,
         'status_updated': order.payment_status != 'PENDING'  # Indicate if status was checked/updated
     }, status=status.HTTP_200_OK)

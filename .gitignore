@@ -294,3 +294,6 @@ jspm_packages/
 migrations/__pycache__/
 */migrations/__pycache__/
 */migrations/*.pyc
+.*pyc
+*common/__pycache__/*
+

@@ -220,9 +220,12 @@ class Payment(models.Model):
 
     PAYMENT_METHOD_CHOICES = [
         ('CASH', 'Cash'),
+        ('UPI_INTENT', 'UPI Intent'),
+        ('UPI_COLLECT', 'UPI Collect'),
+        ('UPI_QR', 'UPI QR'),
         ('CARD', 'Card'),
-        ('UPI', 'UPI'),
-        ('WALLET', 'Wallet'),
+        ('TOKEN', 'Token'),
+        ('NET_BANKING', 'Net Banking'),
     ]
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
