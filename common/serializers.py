@@ -1,15 +1,115 @@
 from rest_framework import serializers
-from .models import Category, Variant, Product, Tag, Cart, CartItem, Order, Payment
+from .models import Category, Variant, Product, Cart, CartItem, Order, Payment
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'description', 'is_available', 'type']
 
+class AdminCategorySerializer(serializers.ModelSerializer):
+    """Admin serializer for category CRUD operations"""
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'description', 'is_available', 'type']
+
+    def validate_name(self, value):
+        """Validate that category name is unique"""
+        if Category.objects.filter(name__iexact=value).exclude(
+            id=self.instance.id if self.instance else None
+        ).exists():
+            raise serializers.ValidationError("A category with this name already exists.")
+        return value
+
+    def validate_type(self, value):
+        """Validate that type is a list"""
+        if not isinstance(value, list):
+            raise serializers.ValidationError("Type must be a list.")
+        return value
+
 class VariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variant
         fields = ['id', 'size', 'price', 'description', 'is_available', 'type']
+
+class ProductSerializer(serializers.ModelSerializer):
+    """Serializer for Product model with category details"""
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    variants = VariantSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'image_urls', 'discount', 'is_available',
+                 'category', 'category_name', 'sub_category', 'variants']
+
+# Admin serializers for CRUD operations
+class AdminProductSerializer(serializers.ModelSerializer):
+    """Admin serializer for all product operations with exact DB fields"""
+    variants = VariantSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'image_urls', 'discount', 'is_available',
+                 'category', 'sub_category', 'variants']
+
+    def validate_category(self, value):
+        """Validate that category exists and is available"""
+        if not value.is_available:
+            raise serializers.ValidationError("Cannot assign product to an unavailable category.")
+        return value
+
+    def validate_discount(self, value):
+        """Validate discount is within acceptable range"""
+        if value < 0 or value > 100:
+            raise serializers.ValidationError("Discount must be between 0 and 100.")
+        return value
+
+
+class AdminVariantSerializer(serializers.ModelSerializer):
+    """Admin serializer for creating/updating variants"""
+    product_name = serializers.CharField(source='product.name', read_only=True)
+
+    class Meta:
+        model = Variant
+        fields = ['id', 'product', 'product_name', 'size', 'price', 'description',
+                 'is_available', 'type']
+
+    def validate_product(self, value):
+        """Validate that product exists and is available"""
+        if not value.is_available:
+            raise serializers.ValidationError("Cannot create variant for an unavailable product.")
+        return value
+
+    def validate_price(self, value):
+        """Validate price is positive"""
+        if value <= 0:
+            raise serializers.ValidationError("Price must be greater than 0.")
+        return value
+
+    def validate(self, data):
+        """Cross-field validation for variant uniqueness"""
+        product = data.get('product')
+        size = data.get('size')
+        variant_type = data.get('type')
+
+        # Check for duplicate variants (same product, size, and type)
+        if product and size and variant_type:
+            existing_variant = Variant.objects.filter(
+                product=product,
+                size=size,
+                type=variant_type
+            )
+
+            # Exclude current instance if updating
+            if self.instance:
+                existing_variant = existing_variant.exclude(id=self.instance.id)
+
+            if existing_variant.exists():
+                raise serializers.ValidationError(
+                    f"A variant with size '{size}' and type '{variant_type}' already exists for this product."
+                )
+
+        return data
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:

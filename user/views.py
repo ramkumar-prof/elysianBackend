@@ -85,17 +85,22 @@ def login_user(request):
         user = authenticate(request, username=mobile_number, password=password)
         if user:
             refresh = RefreshToken.for_user(user)
-
-            response = Response({
-                'message': 'Login successful',
-                'user': {
+            response_data = {
                     'mobile_number': user.mobile_number,
                     'alternate_mobile_number': user.alternate_mobile_number,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'email': user.email,
-                    'profile_picture': user.profile_picture.url if user.profile_picture else None
-                },
+                    'profile_picture': user.profile_picture.url if user.profile_picture else None,
+                }
+            if user.is_staff:
+                response_data['is_staff'] = True
+            if user.is_superuser:
+                response_data['is_superuser'] = True
+
+            response = Response({
+                'message': 'Login successful',
+                'user': response_data,
                 'access_token': str(refresh.access_token)
             }, status=status.HTTP_200_OK)
 
@@ -141,15 +146,20 @@ def get_current_user(request):
     Get current authenticated user details
     """
     user = request.user
-    return Response({
-        'user': {
+    response_data = {
             'mobile_number': user.mobile_number,
             'alternate_mobile_number': user.alternate_mobile_number,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'email': user.email,
-            'profile_picture': user.profile_picture.url if user.profile_picture else None
+            'profile_picture': user.profile_picture.url if user.profile_picture else None,
         }
+    if user.is_staff:
+        response_data['is_staff'] = True
+    if user.is_superuser:
+        response_data['is_superuser'] = True
+    return Response({
+        'user': response_data
     }, status=status.HTTP_200_OK)
 
 @api_view(['PUT', 'PATCH'])
@@ -170,16 +180,21 @@ def update_current_user(request):
     
     try:
         user.save()
+        response_data = {
+            'mobile_number': user.mobile_number,
+            'alternate_mobile_number': user.alternate_mobile_number,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'profile_picture': user.profile_picture.url if user.profile_picture else None,
+        }
+        if user.is_staff:
+            response_data['is_staff'] = True
+        if user.is_superuser:
+            response_data['is_superuser'] = True
         return Response({
             'message': 'User updated successfully',
-            'user': {
-                'mobile_number': user.mobile_number,
-                'alternate_mobile_number': user.alternate_mobile_number,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                'profile_picture': user.profile_picture.url if user.profile_picture else None
-            }
+            'user': response_data
         }, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({

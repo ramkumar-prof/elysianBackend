@@ -7,6 +7,12 @@ class RestaurentMenu(models.Model):
     is_available = models.BooleanField(default=True)
     is_veg = models.BooleanField(default=False)
     default_variant = models.ForeignKey(Variant, on_delete=models.SET_NULL, null=True, blank=True)
-    
+
+    class Meta:
+        # Ensure no duplicate menu items for the same restaurant and product
+        unique_together = ['restaurent', 'product']
+        verbose_name = 'Restaurant Menu Item'
+        verbose_name_plural = 'Restaurant Menu Items'
+
     def __str__(self):
         return f"{self.restaurent.name} - {self.product.name}"

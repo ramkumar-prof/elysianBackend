@@ -186,3 +186,11 @@ CORS_ALLOW_CREDENTIALS = CORS_ALLOW_CREDENTIALS
 
 # Custom user model
 AUTH_USER_MODEL = 'user.CustomUser'
+
+# Admin interface control
+ADMIN_ENABLED = os.getenv('DJANGO_ADMIN_ENABLED', 'False').lower() == 'true'
+
+# Admin security settings (if admin is enabled)
+ADMIN_ALLOWED_IPS = os.getenv('ADMIN_ALLOWED_IPS', '127.0.0.1,localhost').split(',')
+ADMIN_START_HOUR = int(os.getenv('ADMIN_START_HOUR', '9'))  # 9 AM
+ADMIN_END_HOUR = int(os.getenv('ADMIN_END_HOUR', '17'))     # 5 PM
