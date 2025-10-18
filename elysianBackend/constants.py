@@ -75,7 +75,6 @@ else:
 
 # Database settings
 if IS_PRODUCTION:
-    DATABASE_URL = os.getenv('DATABASE_URL')
     DATABASE_NAME = os.getenv('DATABASE_NAME')
     DATABASE_USER = os.getenv('DATABASE_USER')
     DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
@@ -83,12 +82,11 @@ if IS_PRODUCTION:
     DATABASE_PORT = os.getenv('DATABASE_PORT', '5432')
 else:
     # Development/QA: Use SQLite
-    DATABASE_URL = None
-    DATABASE_NAME = 'db.sqlite3'
-    DATABASE_USER = None
-    DATABASE_PASSWORD = None
-    DATABASE_HOST = None
-    DATABASE_PORT = None
+    DATABASE_NAME = 'elysian'
+    DATABASE_USER = 'elysian'
+    DATABASE_PASSWORD = 'elysian#12345678'
+    DATABASE_HOST = 'localhost'
+    DATABASE_PORT = '3306'
 
 # API Rate limiting
 if IS_PRODUCTION:
