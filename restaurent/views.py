@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, renderer_classes, permission_cla
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from common.views import SessionOrJWTAuthentication
+from common.views.common import SessionOrJWTAuthentication
 from .models import RestaurentMenu
 from .serializers import RestaurentMenuSerializer
 

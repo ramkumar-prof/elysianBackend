@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import common, product, cart
+from .views import common, product, cart, order
 
 urlpatterns = [
     # Common views
@@ -12,5 +12,10 @@ urlpatterns = [
     path('products/<int:product_id>/variants/<int:variant_id>/pricing/', product.get_product_pricing, name='get-product-pricing'),
     
     # Cart views
-    path('cart/', cart.get_cart_items, name='get-cart-items'),
+    path('cart/', cart.cart_view, name='cart'),
+
+    # Order views
+    path('checkout/', order.checkout, name='checkout'),
+    path('orders/', order.get_user_orders, name='get-user-orders'),
+    path('orders/<int:order_id>/', order.get_order_details, name='get-order-details'),
 ]
