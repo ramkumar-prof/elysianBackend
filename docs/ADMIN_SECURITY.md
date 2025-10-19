@@ -106,6 +106,22 @@ DELETE /api/common/admin/variants/{id}/delete/
 GET /api/common/admin/variants/list/
 ```
 
+### Category Management:
+```bash
+POST /api/common/admin/categories/add/
+PUT /api/common/admin/categories/{id}/update/
+DELETE /api/common/admin/categories/{id}/delete/
+GET /api/common/admin/categories/list/
+```
+
+### Tag Management:
+```bash
+POST /api/common/admin/tags/add/
+PUT /api/common/admin/tags/{id}/update/
+DELETE /api/common/admin/tags/{id}/delete/
+GET /api/common/admin/tags/list/
+```
+
 ### User Management:
 ```bash
 GET /api/user/profile/  # With admin fields for staff/superuser

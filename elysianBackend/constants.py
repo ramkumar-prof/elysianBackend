@@ -34,6 +34,10 @@ else:
     CLIENT_VERSION = 1
     PAYMENT_ENV = Env.SANDBOX
 
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
+AWS_BUCKET_NAME = os.getenv('AWS_BUCKET_NAME', 'elysian-data')
+
 # Cookie security settings
 if IS_PRODUCTION:
     # Production: Read from environment variables

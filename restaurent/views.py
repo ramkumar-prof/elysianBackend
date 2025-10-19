@@ -16,7 +16,14 @@ def restaurant_menu_list(request):
     """
     API endpoint that returns all restaurant menu items
     """
-    menu_items = RestaurentMenu.objects.select_related('product', 'product__category', 'default_variant').all()
+    # Only show menu items where product is available and has at least one available variant
+    menu_items = RestaurentMenu.objects.select_related(
+        'product', 'product__category', 'default_variant'
+    ).filter(
+        product__is_available=True,  # Product must be available
+        product__variants__is_available=True  # At least one variant must be available
+    ).distinct()
+
     serializer = RestaurentMenuSerializer(menu_items, many=True)
     return Response(serializer.data)
 

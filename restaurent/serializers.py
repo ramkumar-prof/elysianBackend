@@ -20,8 +20,8 @@ class RestaurentMenuSerializer(serializers.ModelSerializer):
                  'discount_percentage', 'is_available', 'veg', 'category', 'sub_categories', 'product_id']
 
     def get_variants(self, obj):
-        # Get variants using the foreign key relationship
-        variants = obj.product.variants.all()
+        # Get only available variants using the foreign key relationship
+        variants = obj.product.variants.filter(is_available=True)
         result = []
 
         for variant in variants:

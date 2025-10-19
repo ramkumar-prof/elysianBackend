@@ -25,6 +25,8 @@ urlpatterns = [
     path('admin/products/<int:product_id>/', admin.admin_get_product, name='admin-get-product'),
     path('admin/products/<int:product_id>/update/', admin.admin_update_product, name='admin-update-product'),
     path('admin/products/<int:product_id>/delete/', admin.admin_delete_product, name='admin-delete-product'),
+    path('admin/products/upload-image/', admin.admin_upload_product_image, name='admin-upload-product-image'),
+    path('admin/products/delete-image/', admin.admin_delete_product_image, name='admin-delete-product-image'),
 
     # Admin Variant Management APIs
     path('admin/variants/', admin.admin_list_variants, name='admin-list-variants'),
@@ -39,4 +41,11 @@ urlpatterns = [
     path('admin/categories/<int:category_id>/', admin.admin_get_category, name='admin-get-category'),
     path('admin/categories/<int:category_id>/update/', admin.admin_update_category, name='admin-update-category'),
     path('admin/categories/<int:category_id>/delete/', admin.admin_delete_category, name='admin-delete-category'),
+
+    # Admin Tag Management APIs
+    path('admin/tags/', admin.admin_list_tags, name='admin-list-tags'),
+    path('admin/tags/add/', admin.admin_add_tag, name='admin-add-tag'),
+    path('admin/tags/<int:tag_id>/', admin.admin_get_tag, name='admin-get-tag'),
+    path('admin/tags/<int:tag_id>/update/', admin.admin_update_tag, name='admin-update-tag'),
+    path('admin/tags/<int:tag_id>/delete/', admin.admin_delete_tag, name='admin-delete-tag'),
 ]

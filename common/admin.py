@@ -77,6 +77,18 @@ Variants:
 - PUT /api/common/admin/variants/{id}/update/
 - DELETE /api/common/admin/variants/{id}/delete/
 
+Categories:
+- GET /api/common/admin/categories/list/
+- POST /api/common/admin/categories/add/
+- PUT /api/common/admin/categories/{id}/update/
+- DELETE /api/common/admin/categories/{id}/delete/
+
+Tags:
+- GET /api/common/admin/tags/list/
+- POST /api/common/admin/tags/add/
+- PUT /api/common/admin/tags/{id}/update/
+- DELETE /api/common/admin/tags/{id}/delete/
+
 Authentication: JWT tokens with IsAdminUser permission required
 """
 
