@@ -174,11 +174,7 @@ media/
 staticfiles/
 static/
 
-# If you are using PostgreSQL
-*.sql
 
-# If you are using MySQL
-*.mysql
 
 # Environment variables
 .env
@@ -297,3 +293,4 @@ migrations/__pycache__/
 .*pyc
 *common/__pycache__/*
 
+*__pycache__*
