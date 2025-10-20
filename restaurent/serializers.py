@@ -3,6 +3,15 @@ from django.db import IntegrityError
 from .models import RestaurentMenu
 from common.models import Product, Variant, RestaurentEntity
 
+
+class RestaurentEntitySerializer(serializers.ModelSerializer):
+    """
+    Serializer for RestaurentEntity model
+    """
+    class Meta:
+        model = RestaurentEntity
+        fields = ['id', 'name', 'description', 'address', 'is_available']
+
 class RestaurentMenuSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='product.name')
     description = serializers.CharField(source='product.description')
@@ -35,6 +44,36 @@ class RestaurentMenuSerializer(serializers.ModelSerializer):
             })
 
         return result
+
+
+class AdminMenuItemSerializer(serializers.ModelSerializer):
+    """
+    Serializer for admin view that returns all menu items with restaurant and product details
+    """
+    restaurent_entity_id = serializers.IntegerField(source='restaurent.id')
+    restaurent_name = serializers.CharField(source='restaurent.name')
+    product_id = serializers.IntegerField(source='product.id')
+    product_name = serializers.CharField(source='product.name')
+    default_variant = serializers.SerializerMethodField()
+
+    class Meta:
+        model = RestaurentMenu
+        fields = ['id', 'restaurent_entity_id', 'restaurent_name', 'product_id', 'product_name',
+                 'is_available', 'is_veg', 'default_variant']
+
+    def get_default_variant(self, obj):
+        """
+        Return default variant details if exists, including variant ID and size
+        """
+        if obj.default_variant:
+            return {
+                'variant_id': obj.default_variant.id,
+                'size': obj.default_variant.size
+            }
+        return None
+
+
+
 
 
 class AddMenuItemSerializer(serializers.ModelSerializer):

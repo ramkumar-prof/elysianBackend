@@ -355,29 +355,41 @@ def admin_get_variant(request, variant_id):
 @permission_classes([IsAdminUser])
 def admin_list_variants(request):
     """
-    Admin-only API endpoint to list all variants with filtering options
-    
+    Admin-only API endpoint to list variants for a specific product
+
     Query parameters:
-    - product: Filter by product ID
-    - is_available: Filter by availability (true/false)
-    - type: Filter by variant type
+    - product_id (required): Filter by product ID
+    - is_available (optional): Filter by availability (true/false)
+
+    Returns:
+    - 200: List of variants for the specified product
+    - 400: Missing or invalid product_id parameter
+    - 401: Authentication required
+    - 403: Admin permission required
     """
-    variants = Variant.objects.select_related('product')
-    
-    # Apply filters
-    product_id = request.GET.get('product')
-    if product_id:
-        variants = variants.filter(product_id=product_id)
-    
+    # product_id is mandatory
+    product_id = request.GET.get('product_id')
+    if not product_id:
+        return Response({
+            'error': 'product_id parameter is required'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        product_id = int(product_id)
+    except (ValueError, TypeError):
+        return Response({
+            'error': 'Invalid product_id parameter. Must be a valid integer.'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # Start with variants for the specified product
+    variants = Variant.objects.select_related('product').filter(product_id=product_id)
+
+    # Apply optional is_available filter
     is_available = request.GET.get('is_available')
     if is_available is not None:
         is_available_bool = is_available.lower() == 'true'
         variants = variants.filter(is_available=is_available_bool)
-    
-    variant_type = request.GET.get('type')
-    if variant_type:
-        variants = variants.filter(type__icontains=variant_type)
-    
+
     serializer = AdminVariantSerializer(variants, many=True)
     return Response({
         'count': variants.count(),
