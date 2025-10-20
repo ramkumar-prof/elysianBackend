@@ -12,3 +12,8 @@ docker-compose down
 docker-compose up --build -d
 docker-compose logs -f backend
 sudo docker ps
+
+scp ubuntu@13.204.159.82:~/elysian/elysianBackend/media/images/products prod-media
+
+
+mysqldump -u elysian -p elusian db_backup.sql

@@ -153,7 +153,7 @@ def checkout(request):
                 payment = Payment.objects.create(
                     order=order,
                     amount=total_amount,
-                    transaction_id='',
+                    transaction_id=None,  # Will be updated when payment is processed
                     gateway_order_id=gateway_order_id,
                     payment_status=payment_state,
                     payment_method='',  # Default, will be updated based on user selection
