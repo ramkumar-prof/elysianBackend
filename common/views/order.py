@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.utils import timezone
 from decimal import Decimal
+from elysianBackend.constants import DOMAIN
 import uuid
 import logging
 
@@ -127,7 +128,7 @@ def checkout(request):
                 logger.info(f"🔑 Generated gateway order ID: {gateway_order_id}")
 
                 # Prepare callback URL
-                callback_url = f"http://localhost:4200/order/status/{order.id}"
+                callback_url = f"{DOMAIN}/order/status/{order.id}"
                 logger.info(f"🔗 Callback URL set: {callback_url}")
 
                 # Initiate payment using payment_utils

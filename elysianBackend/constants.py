@@ -22,6 +22,9 @@ REFRESH_TOKEN_COOKIE_NAME = 'refresh_token'
 ACCESS_TOKEN_COOKIE_NAME = 'access_token'
 SESSION_COOKIE_NAME = 'sessionid'
 
+#set domain
+DOMAIN = os.getenv('DOMAIN', 'localhost:4200')
+
 # Payment settings
 if IS_PRODUCTION:
     CLIENT_ID = os.getenv('CLIENT_ID')
